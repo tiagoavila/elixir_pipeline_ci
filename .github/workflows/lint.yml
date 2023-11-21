@@ -1,29 +1,47 @@
 #.github/workflows/lint.yml
 
+# Define the name of the GitHub Actions workflow as "Check Lint"
 name: Check Lint
 
+# Trigger the workflow on pull requests
 on: pull_request
 
-jobs: 
+# Define the set of jobs to be executed
+jobs:
+  # Define a job named "check_lint"
   check_lint:
+    # Specify the operating system for the job to run on (Ubuntu latest version)
     runs-on: ubuntu-latest
-    strategy: 
-      matrix: 
+    
+    # Define a matrix of Elixir and OTP versions to run the job with
+    strategy:
+      matrix:
         elixir: [1.14]
         otp: [25]
+
+    # Define the steps to be executed in the job
     steps:
+      # Checkout the source code repository
       - uses: actions/checkout@v2
+
+      # Set up the Elixir environment using the specified versions
       - uses: erlef/setup-elixir@v1
         with:
           elixir-version: ${{ matrix.elixir }}
           otp-version: ${{ matrix.otp }}
+
+      # Cache the Mix dependencies to speed up subsequent runs
       - uses: actions/cache@v1
         id: mix-lint-cache
         with:
           path: deps
           key: ${{ runner.os }}-${{ matrix.otp }}-${{ matrix.elixir }}-mix-${{ hashFiles(format('{0}-{1}', github.workspace, '/mix.lock')) }}
-      - name:  Install Mix Dependencies
+
+      # Install Mix dependencies if the cache was not hit
+      - name: Install Mix Dependencies
         if: steps.mix-lint-cache.outputs.cache-hit != 'true'
         run: mix deps.get
+
+      # Run the Mix Credo tool to perform linting with strict checks
       - name: Check LINT
         run: mix credo --strict

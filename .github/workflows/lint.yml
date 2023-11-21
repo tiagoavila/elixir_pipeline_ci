@@ -1,14 +1,16 @@
-name: Check List
+#.github/workflows/lint.yml
+
+name: Check Lint
 
 on: pull_request
 
-jobs:
+jobs: 
   check_lint:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        elixir: [1.14]
-        otp: [25]
+    strategy: 
+      matrix: 
+        elixir: [1.13]
+        otp: [24]
     steps:
       - uses: actions/checkout@v2
       - uses: erlef/setup-elixir@v1
@@ -20,10 +22,8 @@ jobs:
         with:
           path: deps
           key: ${{ runner.os }}-${{ matrix.otp }}-${{ matrix.elixir }}-mix-${{ hashFiles(format('{0}-{1}', github.workspace, '/mix.lock')) }}
-
-      - name: Install Mix dependencies
-        if: steps.mix-format-cache.outputs.cache-hit != 'true'
+      - name:  Install Mix Dependencies
+        if: steps.mix-lint-cache.outputs.cache-hit != 'true'
         run: mix deps.get
-        
-      - name: Check Lint
+      - name: Check LINT
         run: mix credo --strict

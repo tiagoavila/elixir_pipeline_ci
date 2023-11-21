@@ -7,7 +7,7 @@ import Config
 # Run `mix help test` for more information.
 config :elixir_pipeline_ci, ElixirPipelineCi.Repo,
   username: "postgres",
-  password: "postgres",
+  password: "123456",
   hostname: "localhost",
   database: "elixir_pipeline_ci_test#{System.get_env("MIX_TEST_PARTITION")}",
   pool: Ecto.Adapters.SQL.Sandbox,

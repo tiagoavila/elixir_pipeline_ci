@@ -3,7 +3,7 @@ import Config
 # Configure your database
 config :elixir_pipeline_ci, ElixirPipelineCi.Repo,
   username: "postgres",
-  password: "postgres",
+  password: "123456",
   hostname: "localhost",
   database: "elixir_pipeline_ci_dev",
   stacktrace: true,
